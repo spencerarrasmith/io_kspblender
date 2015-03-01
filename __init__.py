@@ -80,6 +80,25 @@ class SelectShipOperator(bpy.types.Operator):
                     obj.select = True
                     
         return {'FINISHED'}
+
+
+class SelectStageOperator(bpy.types.Operator):
+    bl_idname = "object.select_stage"
+    bl_label = "Select Stage"
+    
+    def execute(self,context):
+        scn = bpy.context.scene
+        selected = bpy.context.selected_objects
+        shippart = selected.pop(0)
+        bpy.ops.object.select_all(action = 'DESELECT')
+        shippart.select = True
+        
+        for obj in bpy.data.objects:
+            if not obj.parent and "dstg" in obj.keys():
+                if obj["dstg"] == shippart["dstg"]:
+                    obj.select = True
+                    
+        return {'FINISHED'}
         
 
 class DeletePartOperator(bpy.types.Operator):
@@ -212,6 +231,7 @@ class KSPBMenu(bpy.types.Menu):
         layout.menu("VIEW3D_MT_transform")
         layout.separator()
         layout.operator("object.select_ship", text="Select Ship")
+        layout.operator("object.select_ship", text="Select Stage")
         layout.operator("object.select_part", text="Select All Of This Part")
         layout.operator("object.delete_part", text="Delete Part")
         layout.operator("object.toggle_deploy", text="Toggle Deploy")
