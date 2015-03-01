@@ -75,7 +75,7 @@ class SelectShipOperator(bpy.types.Operator):
         shippart.select = True
         
         for obj in bpy.data.objects:
-            if not obj.parent:
+            if not obj.parent and "ship" in obj.keys():
                 if obj["ship"] == shippart["ship"]:
                     obj.select = True
                     

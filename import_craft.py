@@ -66,10 +66,12 @@ def import_craft(self, context, filepath):
 def import_parts(filepath):
 
     dir = os.path.dirname(__file__)
+    dir.rstrip('\n')
     partdir = part_dir.make()
     rightscale = right_scale.make()
     kspdirfile = open(dir+'\\kspdir.txt')
     ksp = kspdirfile.read()
+    ksp.rstrip('\n')
     
     for obj in bpy.context.scene.objects:
         obj.select = False
