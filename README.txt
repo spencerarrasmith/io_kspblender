@@ -16,7 +16,7 @@
 KSPBLENDER .90
 3/1/2015
 SPENCER ARRASMITH
-GITHUB.COM/DASOCCERGUY/KSPBLENDER
+https://github.com/Dasoccerguy/io_kspblender
 DASOCCERGUY39@GMAIL.COM
 
 Thanks for checking out the readme!
