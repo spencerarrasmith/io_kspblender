@@ -27,12 +27,14 @@ INITAL SETUP
 
 To get this working, you will need to change kspdir to the installation location of Kerbal Space Program
 
-1. Find KSP.exe (look in Steam\Steamapps\common\Kerbal Space Program)
-2. Copy the directory name
-3. Paste it into kspdir.txt
-4. In Blender, press CTRL+ALT+U, go to Addons, and enable this addon. It is called "Import-Export: KSPBlender .craft Import"
-5. Either click "Save User Settings" or come back and enable the addon every time you want to use it.
-6. Enjoy!
+1. Click "Download ZIP," unzip the archive, then place the whole folder into the Blender Addons folder (Blender Foundation/2.73/scripts/addons)
+2. Download the .mu importer from https://github.com/taniwha-qf/io_object_mu, and place the unzipped folder in the same location
+3. Find KSP.exe (look in Steam\Steamapps\common\Kerbal Space Program)
+4. Copy the directory name
+5. Paste it into kspdir.txt
+6. In Blender, press CTRL+ALT+U, go to Addons, and enable this addon. It is called "Import-Export: KSPBlender .craft Import"
+7. Either click "Save User Settings" or come back and enable the addon every time you want to use it.
+8. Enjoy!
 
 
 
