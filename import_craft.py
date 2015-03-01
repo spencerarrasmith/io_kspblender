@@ -18,6 +18,7 @@
 
 from struct import unpack
 import os.path
+import platform
 import math
 
 import bpy
@@ -69,7 +70,10 @@ def import_parts(filepath):
     dir.rstrip('\n')
     partdir = part_dir.make()
     rightscale = right_scale.make()
-    kspdirfile = open(dir+'\\kspdir.txt')
+    if platform.system() == 'Windows':
+        kspdirfile = open(dir+'\\kspdir.txt')
+    else:
+        kspdirfile = open(dir+'/kspdir.txt')
     ksp = kspdirfile.read()
     ksp.rstrip('\n')
     
