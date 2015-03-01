@@ -25,7 +25,7 @@ Thanks for checking out the readme!
 
 INITAL SETUP
 
-To get this working, you will need to change kspdir to the installation location of Kerbal Space Program
+To get this working, you will need to download 2 Blender addons, enable them, and change kspdir to the installation location of Kerbal Space Program
 
 1. Click "Download ZIP," unzip the archive, then place the whole folder into the Blender Addons folder (Blender Foundation\Blender\2.73\scripts\addons)
 2. Download the .mu importer from https://github.com/taniwha-qf/io_object_mu, and place the unzipped folder in the same location
