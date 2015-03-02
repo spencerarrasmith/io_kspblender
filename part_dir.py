@@ -268,6 +268,24 @@ def make():
     partdir['science.module']           = ["\\GameData\\Squad\\Parts\\Science\\MaterialBay\\science_module_small.mu","science"]
     partdir['avionicsNoseCone']         = ["\\GameData\\Squad\\Parts\\Science\\avionicsNoseCone\\model.mu","science"]
 
+    # Kethane
+    partdir['kethane.1m.converter']     = ["\\GameData\\Kethane\\Parts\\kethane_1m_converter\\model.mu","kethane"]
+    partdir['kethane.2m.converter']     = ["\\GameData\\Kethane\\Parts\\kethane_2m_converter\\model.mu","kethane"]
+    partdir['kethane.generator']        = ["\\GameData\\Kethane\\Parts\\kethane_generator\\model.mu","kethane"]
+    partdir['kethane.heavyDrill']       = ["\\GameData\\Kethane\\Parts\\kethane_heavyDrill\\model.mu","kethane"]
+    partdir['kethane.highGain']         = ["\\GameData\\Kethane\\Parts\\kethane_highGain\\model.mu","kethane"]
+    partdir['kethane.kerbalBlender']    = ["\\GameData\\Kethane\\Parts\\kethane_kerbalBlender\\model.mu","kethane"]
+    partdir['kethane.radialDrill']      = ["\\GameData\\Kethane\\Parts\\kethane_radialDrill\\model.mu","kethane"]
+    partdir['kethane.sensor.1m']        = ["\\GameData\\Kethane\\Parts\\kethane_sensor_1m\\model.mu","kethane"]
+    partdir['kethane.smallDrill']       = ["\\GameData\\Kethane\\Parts\\kethane_smallDrill\\model.mu","kethane"]
+    partdir['kethane.tank1mLarge']      = ["\\GameData\\Kethane\\Parts\\kethane_tank1mLarge\\model.mu","kethane"]
+    partdir['kethane.tank1mStandard']   = ["\\GameData\\Kethane\\Parts\\kethane_tank1mStandard\\model.mu","kethane"]
+    partdir['kethane.tank2mExtralarge'] = ["\\GameData\\Kethane\\Parts\\kethane_tank2mExtralarge\\model.mu","kethane"]
+    partdir['kethane.tank2mLarge']      = ["\\GameData\\Kethane\\Parts\\kethane_tank2mLarge\\model.mu","kethane"]
+    partdir['kethane.tank2mMedium']     = ["\\GameData\\Kethane\\Parts\\kethane_tank2mMedium\\model.mu","kethane"]
+    partdir['kethane.tank2mSmall']      = ["\\GameData\\Kethane\\Parts\\kethane_tank2mSmall\\model.mu","kethane"]
+    partdir['kethane.tankExternal']     = ["\\GameData\\Kethane\\Parts\\kethane_tankExternal\\model.mu","kethane"]
+    partdir['kethane.turbine']          = ["\\GameData\\Kethane\\Parts\\kethane_turbine\\model.mu","kethane"]
 
     if platform.system() != 'Windows':
         for key in partdir.keys():

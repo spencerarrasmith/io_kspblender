@@ -28,6 +28,7 @@ from mathutils import Vector, Quaternion
 from . import properties
 from . import part_dir
 from . import right_scale
+from . import right_location
 from . import ksparser
 from .ksparser import *
 
@@ -70,6 +71,7 @@ def import_parts(filepath):
     direc = direc.rstrip('\n')
     partdir = part_dir.make()
     rightscale = right_scale.make()
+    rightlocation = right_location.make()
     if platform.system() == 'Windows':
         kspdirfile = open(direc+'\\kspdir.txt')
     else:
@@ -108,6 +110,7 @@ def import_parts(filepath):
                     newpart.select = True
                     newpart.scale = rightscale[part.partName]
                     bpy.ops.object.transform_apply(location = False, rotation = False, scale = True)
+                    bpy.ops.object.select_all(action = 'DESELECT') 
                     print("Scale corrected")
                 
                 #setup to make lod parts
@@ -170,6 +173,12 @@ def import_parts(filepath):
                 newpart.rotation_quaternion = part.rotQ                                                         # rotate it
                 for obj in hiddenlist:                                                                          # hide all that annoying stuff again
                     obj.hide = True
+
+        if part.partName in rightlocation:
+            newpart.select = True
+            bpy.ops.transform.translate(value=rightlocation[part.partName],constraint_axis=(False,False,False),constraint_orientation='LOCAL',mirror=False,proportional='DISABLED',proportional_edit_falloff='SMOOTH',proportional_size=1)
+            bpy.ops.object.select_all(action = 'DESELECT') 
+            print("Location corrected")
         
         else:
             print("Failed to load "+part.partName+"... Probably an unsupported mod. Let me know what part it was!\n")                                   # if the part doesn't exist, let me know
