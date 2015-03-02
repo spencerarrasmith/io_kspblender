@@ -75,7 +75,7 @@ def import_parts(filepath):
     else:
         kspdirfile = open(dir+'/kspdir.txt')
     ksp = kspdirfile.read()
-    ksp.rstrip('\n')
+    ksp = ksp.rstrip('\n')                                      # this plugin should now work on Linux -- thanks Sma!!!
     
     for obj in bpy.context.scene.objects:
         obj.select = False
