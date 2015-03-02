@@ -271,6 +271,6 @@ def make():
 
     if platform.system() != 'Windows':
         for key in partdir.keys():
-            partdir[key] = partdir[key][0].replace('\\','/')
+            partdir[key] = [partdir[key][0].replace('\\','/'),partdir[key][1]]
 
     return partdir

@@ -75,36 +75,31 @@ class SelectShipOperator(bpy.types.Operator):
         shippart.select = True
         
         for obj in bpy.data.objects:
-            if not obj.parent:
+            if not obj.parent and "ship" in obj.keys():
                 if obj["ship"] == shippart["ship"]:
                     obj.select = True
                     
         return {'FINISHED'}
 
-#class DuplicatePartOperator(bpy.types.Operator):
-#    bl_idname = "object.duplicate_part"
-#    bl_label = "Duplicate Part"
-#
-#    def execute(self,context):
-#        scn = bpy.context.scene
-#        dup = bpy.context.selected_objects
-#
-#        for obj in dup:
-#            if obj.parent == None:
-#                queue = [obj]
-#
-#                while queue:
-#                    current = queue.pop(0)
-#                    current.hide_select = False
-#                    current.hide = False
-#                    current.select = True
-#                    scn.objects.active = current
-#                    for child in current.children:
-#                        queue.append(child)
-#                        
-#                    bpy.ops.object.delete(use_global = False)
-#        return {'FINISHED'}
+
+class SelectStageOperator(bpy.types.Operator):
+    bl_idname = "object.select_stage"
+    bl_label = "Select Stage"
     
+    def execute(self,context):
+        scn = bpy.context.scene
+        selected = bpy.context.selected_objects
+        shippart = selected.pop(0)
+        bpy.ops.object.select_all(action = 'DESELECT')
+        shippart.select = True
+        
+        for obj in bpy.data.objects:
+            if not obj.parent and "dstg" in obj.keys():
+                if obj["dstg"] == shippart["dstg"]:
+                    obj.select = True
+                    
+        return {'FINISHED'}
+        
 
 class DeletePartOperator(bpy.types.Operator):
     bl_idname = "object.delete_part"
@@ -127,7 +122,7 @@ class DeletePartOperator(bpy.types.Operator):
                     for child in current.children:
                         queue.append(child)
                         
-                    bpy.ops.object.delete(use_global = False)
+                bpy.ops.object.delete(use_global = False)
         return {'FINISHED'}
 
     
@@ -236,6 +231,7 @@ class KSPBMenu(bpy.types.Menu):
         layout.menu("VIEW3D_MT_transform")
         layout.separator()
         layout.operator("object.select_ship", text="Select Ship")
+        layout.operator("object.select_ship", text="Select Stage")
         layout.operator("object.select_part", text="Select All Of This Part")
         layout.operator("object.delete_part", text="Delete Part")
         layout.operator("object.toggle_deploy", text="Toggle Deploy")
