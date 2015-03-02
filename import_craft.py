@@ -66,14 +66,14 @@ def import_craft(self, context, filepath):
 
 def import_parts(filepath):
 
-    dir = os.path.dirname(__file__)
-    dir.rstrip('\n')
+    direc = os.path.dirname(__file__)
+    direc = direc.rstrip('\n')
     partdir = part_dir.make()
     rightscale = right_scale.make()
     if platform.system() == 'Windows':
-        kspdirfile = open(dir+'\\kspdir.txt')
+        kspdirfile = open(direc+'\\kspdir.txt')
     else:
-        kspdirfile = open(dir+'/kspdir.txt')
+        kspdirfile = open(direc+'/kspdir.txt')
     ksp = kspdirfile.read()
     ksp = ksp.rstrip('\n')                                      # this plugin should now work on Linux -- thanks Sma!!!
     
