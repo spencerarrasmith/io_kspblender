@@ -16,6 +16,8 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import platform
+
 def make():
     """Makes a big stupid dictionary of where each part is located. Making this function sucked."""
     
@@ -265,5 +267,10 @@ def make():
     partdir['sensorBarometer']          = ["\\GameData\\Squad\\Parts\\Utility\\sensorBarometer\\model.mu","science"]
     partdir['science.module']           = ["\\GameData\\Squad\\Parts\\Science\\MaterialBay\\science_module_small.mu","science"]
     partdir['avionicsNoseCone']         = ["\\GameData\\Squad\\Parts\\Science\\avionicsNoseCone\\model.mu","science"]
+
+
+    if platform.system() != 'Windows':
+        for key in partdir.keys():
+            partdir[key] = partdir[key][0].replace('\\','/')
 
     return partdir
