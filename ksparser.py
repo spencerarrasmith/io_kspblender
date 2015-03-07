@@ -63,7 +63,7 @@ class kspcraft:
     
     def parse_file(self):
         """read in the plaintext .craft file"""
-        fileobj = open(self.filename)
+        fileobj = open(self.filename,'r',encoding='utf-8')
         text = fileobj.read()
         fileobj.close()
         self.lines = text.splitlines()

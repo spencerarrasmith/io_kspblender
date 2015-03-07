@@ -73,9 +73,9 @@ def import_parts(filepath):
     rightscale = right_scale.make()
     rightlocation = right_location.make()
     if platform.system() == 'Windows':
-        kspdirfile = open(direc+'\\kspdir.txt')
+        kspdirfile = open(direc+'\\kspdir.txt','r',encoding='utf-8')
     else:
-        kspdirfile = open(direc+'/kspdir.txt')
+        kspdirfile = open(direc+'/kspdir.txt','r',encoding='utf-8')
     ksp = kspdirfile.read()
     ksp = ksp.rstrip('\n')                                      # this plugin should now work on Linux -- thanks Sma!!!
     
