@@ -68,7 +68,6 @@ class SelectShipOperator(bpy.types.Operator):
     bl_label = "Select Ship"
     
     def execute(self,context):
-        scn = bpy.context.scene
         selected = bpy.context.selected_objects
         shippart = selected.pop(0)
         bpy.ops.object.select_all(action = 'DESELECT')
@@ -87,7 +86,6 @@ class SelectStageOperator(bpy.types.Operator):
     bl_label = "Select Stage"
     
     def execute(self,context):
-        scn = bpy.context.scene
         selected = bpy.context.selected_objects
         shippart = selected.pop(0)
         bpy.ops.object.select_all(action = 'DESELECT')
@@ -122,7 +120,7 @@ class DeletePartOperator(bpy.types.Operator):
                     for child in current.children:
                         queue.append(child)
                         
-                bpy.ops.object.delete(use_global = False)
+        bpy.ops.object.delete(use_global = False)
         return {'FINISHED'}
 
     
@@ -149,8 +147,8 @@ class ToggleDeployOperator(bpy.types.Operator):
                         
             curobj.select = False
         bpy.ops.object.select_all(action = 'DESELECT')
-        bpy.context.scene.frame_current=1
-        bpy.context.scene.frame_current=0
+        scn.frame_current=1
+        scn.frame_current=0
         for object in selection:
             object.select = True
         return {'FINISHED'}
@@ -182,7 +180,6 @@ class SelectAllOfThisPartOperator(bpy.types.Operator):
     bl_label = "Select All of This Part"
     
     def execute(self,context):
-        scn = bpy.context.scene
         selected = bpy.context.selected_objects
         
         for obj in bpy.data.objects:
@@ -190,6 +187,92 @@ class SelectAllOfThisPartOperator(bpy.types.Operator):
                 for sel_obj in selected:
                     if obj['partName'] == sel_obj['partName']:
                         obj.select = True
+        
+        return {'FINISHED'}
+
+class MakePrintableOperator(bpy.types.Operator):
+    bl_idname = "object.make_printable"
+    bl_label = "Make 3D Printable"
+
+    def execute(self,context):
+        scn = bpy.context.scene
+        selected = bpy.context.selected_objects
+        shippart = selected.pop(0)
+        bpy.ops.object.select_all(action = 'DESELECT')
+        shippart.select = True
+        shipname = shippart["ship"]
+
+        mergelist = []
+    
+        for obj in scn.objects:
+            print(obj.name)
+            if obj.type == 'MESH' and obj["ship"] == shipname and not obj.hide:
+                mergelist.append(obj)
+                scn.objects.active = obj
+                bpy.ops.object.modifier_add(type='SOLIDIFY')
+                obj.modifiers["Solidify"].thickness = 5*obj.modifiers['Solidify'].thickness # Play with this variable
+                obj.modifiers["Solidify"].offset = 1
+                obj.modifiers["Solidify"].use_quality_normals = True
+                bpy.ops.object.modifier_apply(apply_as = 'DATA', modifier = "Solidify")
+            else:
+                print("Skipped ",obj.name)
+        
+        while len(mergelist) > 1:
+            bpy.ops.object.select_all(action = 'DESELECT') 
+            merge1 = mergelist.pop()
+            merge2 = mergelist.pop()
+            scn.objects.active = merge1
+            merge1.select = True
+            bpy.ops.object.modifier_add(type='BOOLEAN')
+            merge1.modifiers[0].operation = 'UNION'
+            merge1.modifiers[0].object = merge2
+            modname = merge1.modifiers[0].name
+            bpy.ops.object.modifier_apply(apply_as='DATA', modifier=modname)
+            mergelist.append(bpy.context.active_object)
+        
+        result = bpy.context.active_object
+        result.select = True
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.remove_doubles(threshold = 0.001)
+        bpy.ops.mesh.normals_make_consistent(inside = False)
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.parent_clear(type='CLEAR')
+        result.name = "RESULT"
+        result.scale = (10,10,10)
+
+        return {'FINISHED'}
+
+class MakeOneMeshOperator(bpy.types.Operator):
+    bl_idname = "object.make_one_mesh"
+    bl_label = "Make One Mesh"
+
+    def execute(self,context):
+        scn = bpy.context.scene
+        selected = bpy.context.selected_objects
+        shippart = selected.pop(0)
+        bpy.ops.object.select_all(action = 'DESELECT')
+        shippart.select = True
+        shipname = shippart["ship"]
+
+        mergelist = []
+
+        for obj in scn.objects:
+            if obj.type == 'MESH' and obj["ship"] == shipname and not obj.hide:
+                mergelist.append(obj)
+
+        bpy.ops.object.select_all(action = 'DESELECT')         
+        for obj in mergelist:
+            obj.select = True
+        
+        bpy.ops.object.join()
+        bpy.ops.object.parent_clear(type='CLEAR')
+        result = bpy.context.active_object
+        result.name = "RESULT"
+        #result.scale = (10,10,10)
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.remove_doubles(threshold = 0.001)
+        bpy.ops.mesh.normals_make_consistent(inside = False)
+        bpy.ops.object.mode_set(mode='OBJECT')
         
         return {'FINISHED'}
 
@@ -221,21 +304,20 @@ class KSPBMenu(bpy.types.Menu):
     
     def draw(self, context):
         layout = self.layout
-        layout.operator("object.shade_smooth", text="Shade Smooth")
-        layout.operator("object.shade_flat", text="Shade Flat")
-        layout.separator()
-        layout.operator_menu_enum("object.modifier_add", "type")
-        layout.separator()
-        layout.operator_menu_enum("object.constraint_add", "type")
-        layout.separator()
-        layout.menu("VIEW3D_MT_transform")
-        layout.separator()
         layout.operator("object.select_ship", text="Select Ship")
         layout.operator("object.select_ship", text="Select Stage")
         layout.operator("object.select_part", text="Select All Of This Part")
-        layout.operator("object.delete_part", text="Delete Part")
+
+        layout.separator()
         layout.operator("object.toggle_deploy", text="Toggle Deploy")
+
+        layout.separator()
+        layout.operator("object.make_one_mesh", text="Make One Mesh")
+        layout.operator("object.make_printable", text="Make 3D Printable")
+        
+        layout.separator()
         layout.operator("object.toggle_editable", text="Toggle Editable")
+        layout.operator("object.delete_part", text="Delete Part")
         
 
 def register():

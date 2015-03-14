@@ -57,7 +57,7 @@ def import_craft(self, context, filepath):
     rightscale = right_scale.make()
     craft = import_parts(filepath)
     fairing_fixer(craft.partslist)
-    scale_fixer(craft,10)
+    scale_fixer(craft,1)
     stage_grouper()
     #unselectable_fixer()
     print( "All done")
