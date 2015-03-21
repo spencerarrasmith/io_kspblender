@@ -30,6 +30,7 @@ from . import part_dir
 from . import right_scale
 from . import right_location
 from . import ksparser
+from . import partdic
 from .ksparser import *
 
 def import_craft(self, context, filepath):
@@ -55,6 +56,7 @@ def import_craft(self, context, filepath):
 
     partdir = part_dir.make()
     rightscale = right_scale.make()
+    rightlocation = right_location.make()
     craft = import_parts(filepath)
     fairing_fixer(craft.partslist)
     scale_fixer(craft,1)
