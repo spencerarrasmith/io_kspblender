@@ -30,7 +30,6 @@ from . import part_dir
 from . import right_scale
 from . import right_location
 from . import ksparser
-from . import partdic
 from .ksparser import *
 
 def import_craft(self, context, filepath):
