@@ -192,13 +192,13 @@ def import_parts(filepath,partdir,right_scale,right_location):
         doneobj = set(bpy.data.objects)                                                                     # done dealing with all the objects that are now in the scene (except for the ones I'm about to work with in objlist)
         emptysize = []
                 
-        if partdir[part.partName][1] == "strut":
+        if part.partName == "strutConnector":
             add_strut(part,objlist)
             
-        elif partdir[part.partName][1] == "fuelline":
+        elif part.partName == "fuelLine":
             add_fuelline(part,objlist)
             
-        elif partdir[part.partName][1] == "launchclamp":
+        elif part.partName == "launchClamp1":
             add_launchclamp(part,objlist)
                     
         else:    
@@ -383,15 +383,43 @@ def add_fuelline(part,objlist):
             anchor = child
         if "target" in child.name:
             target = child
-            target.empty_draw_type = 'SPHERE'
-            target.empty_draw_size = .25
+            for grandchild in target.children:
+                if grandchild.type == 'MESH':
+                    targetAnchor = grandchild
+                if grandchild.type == 'EMPTY':
+                    if len(grandchild.children):
+                        targetCap = grandchild.children[0]
+                    else:
+                        targetCap = None
         if "line" in child.name:
-            bpy.ops.object.select_all(action = 'DESELECT')
             newfuelline = child.children[0]
-            newfuelline.select = True
-            scn.objects.active = newfuelline
-            bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True, material=False, texture=False, animation=False)
-            bpy.ops.object.select_all(action = 'DESELECT')
+
+    bpy.ops.object.select_all(action = 'DESELECT')
+    targetAnchor.select = True
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
+    scn.objects.active = targetAnchor
+    bpy.ops.object.select_all(action = 'DESELECT')
+    if targetCap == None:
+        targetCap = targetAnchor.children[0]
+    targetCap.select = True
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
+    targetAnchor.select = True
+    bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
+    bpy.ops.object.select_all(action = 'DESELECT')
+    newfuelline.select = True
+    scn.objects.active = newfuelline
+    bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True, material=False, texture=False, animation=False)
+    bpy.ops.object.constraint_add(type='STRETCH_TO')
+    bpy.context.object.constraints["Stretch To"].target = targetCap
+    bpy.context.object.constraints["Stretch To"].bulge = 0
+    bpy.ops.object.select_all(action = 'DESELECT')
+    anchor.select = True
+    #bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+    bpy.context.object.name = part.part[0:part.part.rfind('_')]+"Target"+part.part[part.part.rfind('_'):len(part.part)]
+    anchor.empty_draw_type = 'SPHERE'
+    anchor.empty_draw_size = .25 
+    bpy.ops.object.select_all(action = 'DESELECT')
+
 
     if newfuelline.constraints:
         scn.objects.active = newfuelline
@@ -467,15 +495,16 @@ def add_launchclamp(part,objlist):
                     bpy.ops.object.select_all(action = 'DESELECT')
                     scn.objects.active = ground
                     ground.select = True
-                    ground.delta_location = (0,.94,0) 
-                    if not len(ground.constraints):
-                        const = ground.constraints.new("LIMIT_LOCATION")
-                        const.use_min_z  = True
-                        const.use_max_z  = True
-                        const.min_z  = 5
-                        const.max_z  = 5
+                    ground.delta_location = (0,.94,0)
+                    #   BROKEN WHEN USING SOMETHING BESIDES BLENDER UNITS
+                    #if not len(ground.constraints):
+                    #    const = ground.constraints.new("LIMIT_LOCATION")
+                    #    const.use_min_z  = True
+                    #    const.use_max_z  = True
+                    #    const.min_z  = 5
+                    #    const.max_z  = 5
                     bpy.ops.object.select_all(action = 'DESELECT')
-                    ground.location = (ground.location[0],ground.location[1],-mat.to_translation()[2]-ground.location[2])
+                    #ground.location = (ground.location[0],ground.location[1],-mat.to_translation()[2]-ground.location[2])
         if "ground" in child.name:
             ground = child
             groundmesh = ground.children[0]
@@ -484,14 +513,15 @@ def add_launchclamp(part,objlist):
             scn.objects.active = ground
             ground.select = True
             ground.delta_location = (0,.94,0) 
-            if not len(ground.constraints):
-                const = ground.constraints.new("LIMIT_LOCATION")
-                const.use_min_z  = True
-                const.use_max_z  = True
-                const.min_z  = 5
-                const.max_z  = 5
+            #   BROKEN WHEN USING SOMETHING BESIDES BLENDER UNITS
+            #if not len(ground.constraints):
+            #    const = ground.constraints.new("LIMIT_LOCATION")
+            #    const.use_min_z  = True
+            #    const.use_max_z  = True
+            #    const.min_z  = 5
+            #    const.max_z  = 5
             bpy.ops.object.select_all(action = 'DESELECT')
-            ground.location = (ground.location[0],ground.location[1],-mat.to_translation()[2]-ground.location[2])
+            #ground.location = (ground.location[0],ground.location[1],-mat.to_translation()[2]-ground.location[2])
         if "cap" in child.name:
             for grandchild in child.children:
                 if "_mesh" in grandchild.name:
