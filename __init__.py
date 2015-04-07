@@ -330,6 +330,7 @@ def register():
     kmi.properties.name = "OBJECT_MT_KSPBMenu"
 
 def unregister():
+    km = bpy.context.window_manager.keyconfigs.default.keymaps['3D View']
     bpy.utils.unregister_module(__name__)
     bpy.types.INFO_MT_file_import.remove(menu_func_import)
     properties.unregister()

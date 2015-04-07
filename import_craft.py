@@ -26,17 +26,16 @@ from bpy_extras.object_utils import object_data_add
 from mathutils import Vector, Quaternion
 
 from . import properties
-from . import part_dir
-from . import right_scale
-from . import right_location
 from . import ksparser
-from . import partdic
+from . import part_dict
+from . import right_scale
 from .ksparser import *
 
 def import_craft(self, context, filepath):
     operator = self
     undo = bpy.context.user_preferences.edit.use_global_undo
     bpy.context.user_preferences.edit.use_global_undo = False
+    bpy.context.scene.render.engine = 'CYCLES'                      # join the dark side
 
     print("\n")
     print("         A          ")
@@ -54,11 +53,11 @@ def import_craft(self, context, filepath):
     print("  @   @  @@  @   @  ")
     print("\n")
 
-    partdir = part_dir.make()
+    ksp = get_kspdir()
+    [partdir,right_location] = part_dict.make_dict(ksp)             # <3 Cptman
     rightscale = right_scale.make()
-    rightlocation = right_location.make()
-    craft = import_parts(filepath)
-    fairing_fixer(craft.partslist)
+    craft = import_parts(filepath,partdir,rightscale,right_location)
+    fairing_fixer(craft.partslist,partdir)
     scale_fixer(craft,1)
     stage_grouper()
     #unselectable_fixer()
@@ -67,19 +66,21 @@ def import_craft(self, context, filepath):
     bpy.context.user_preferences.edit.use_global_undo = undo
     return {'FINISHED'}
 
-def import_parts(filepath):
-
+def get_kspdir():
     direc = os.path.dirname(__file__)
     direc = direc.rstrip('\n')
-    partdir = part_dir.make()
-    rightscale = right_scale.make()
-    rightlocation = right_location.make()
+
     if platform.system() == 'Windows':
         kspdirfile = open(direc+'\\kspdir.txt','r',encoding='utf-8')
     else:
         kspdirfile = open(direc+'/kspdir.txt','r',encoding='utf-8')
-    ksp = kspdirfile.read()
-    ksp = ksp.rstrip('\n')                                      # this plugin should now work on Linux -- thanks Sma!!!
+    kspdir = kspdirfile.read()
+    kspdir = kspdir.rstrip('\n')                                      # this plugin should now work on Linux -- <3 Sma!!!
+    return kspdir
+
+def import_parts(filepath,partdir,right_scale,right_location):
+
+    ksp = get_kspdir()
     
     for obj in bpy.context.scene.objects:
         obj.select = False
@@ -98,19 +99,20 @@ def import_parts(filepath):
     #to_ground = partslist[0].pos[2]
     
     for part in partslist:
-        if os.path.isfile(ksp+partdir[part.partName][0]):                                                      # make sure the part file exists so nothing crashes
+        part.partName = part.partName.replace('.','_')
+        if os.path.isfile(partdir[part.partName][0]):                                                      # make sure the part file exists so nothing crashes
             print("\n----------------------------------------------------\n")                               # to make console output easier to look at
             if part.partName not in doneparts:                                                              # if part has not been imported...
                 print("Importing "+part.partName+" as "+part.part)                                                               # ...say so on the console
-                bpy.ops.import_object.ksp_mu(filepath=ksp+partdir[part.partName][0])                               # call the importer
+                bpy.ops.import_object.ksp_mu(filepath=partdir[part.partName][0])                               # call the importer
                 newpart = bpy.context.active_object                                                             # set the imported part object to active. from here on, part refers to the part data structure and object to the blender object
                 newpart.select = True
                 newpart.name = part.part                                                                        # rename the object according to the part name (including the number)
                 newpart.location = Vector(part.pos)#+cursor_loc                                                          # move the object
                 newpart.rotation_quaternion = part.rotQ                                                         # rotate the object
-                if part.partName in rightscale:
+                if part.partName in right_scale:
                     newpart.select = True
-                    newpart.scale = rightscale[part.partName]
+                    newpart.scale = right_scale[part.partName]
                     bpy.ops.object.transform_apply(location = False, rotation = False, scale = True)
                     bpy.ops.object.select_all(action = 'DESELECT') 
                     print("Scale corrected")
@@ -176,14 +178,11 @@ def import_parts(filepath):
                 for obj in hiddenlist:                                                                          # hide all that annoying stuff again
                     obj.hide = True
 
-        if part.partName in rightlocation:
+        if part.partName in right_location:
             newpart.select = True
-            bpy.ops.transform.translate(value=rightlocation[part.partName],constraint_axis=(False,False,False),constraint_orientation='LOCAL',mirror=False,proportional='DISABLED',proportional_edit_falloff='SMOOTH',proportional_size=1)
+            bpy.ops.transform.translate(value=right_location[part.partName],constraint_axis=(False,False,False),constraint_orientation='LOCAL',mirror=False,proportional='DISABLED',proportional_edit_falloff='SMOOTH',proportional_size=1)
             bpy.ops.object.select_all(action = 'DESELECT') 
             print("Location corrected")
-        
-        else:
-            print("Failed to load "+part.partName+"... Probably an unsupported mod. Let me know what part it was!\n")                                   # if the part doesn't exist, let me know
         
         if part.partName not in doneparts:                                                                  # if the part hasn't been imported before...
             doneparts[part.partName] = part.part                                                            # ...it has now
@@ -255,15 +254,17 @@ def import_parts(filepath):
 #            if "KSP" not in obj.name and obj.type == 'MESH':
 #                if obj.data.materials:
 #                    materialpreserver.main(obj,part)
-        
-        scn.objects.active = bpy.data.objects[part.part]
-        if emptysize:
-            radius = max(emptysize)
+        if part.part in bpy.data.objects:                       #won't crash and burn here
+            scn.objects.active = bpy.data.objects[part.part]
+            if emptysize:
+                radius = max(emptysize)
+            else:
+                radius = bpy.context.active_object.empty_draw_size
+                if radius < .25:
+                    radius = 0.25
+            bpy.data.objects[part.part].empty_draw_size = radius
         else:
-            radius = bpy.context.active_object.empty_draw_size
-            if radius < .25:
-                radius = 0.25
-        bpy.data.objects[part.part].empty_draw_size = radius
+            print(part.part + " not imported for some reason... let me know which part!")
     
     bpy.ops.object.select_all(action = 'DESELECT')
     print("\n----------------------------------------------------\n") 
@@ -284,23 +285,6 @@ def import_parts(filepath):
     #bpy.context.scene.objects.active = obj
     #obj.select = True
 
-        
-def fairing_fixer(partslist):
-    """Unhides fairings if there is a part connected to the bottom of the engine"""
-    partdir = part_dir.make()
-    for part in partslist:
-        if partdir[part.partName][1] == "engine":
-            for attN in part.attNlist:
-                if attN.loc == "bottom":
-                    root = bpy.data.objects[part.part]
-                    queue = [child for child in root.children]
-                    while len(queue) > 0:
-                        current = queue.pop(0)
-                        if "fair" in current.name:
-                            current.hide = False
-                            current.hide_render = False
-                        for child in current.children:
-                            queue.append(child)
 
 
 def add_strut(part,objlist):
@@ -759,16 +743,32 @@ def material_fixer(obj,part):
             else:
                 print('Failed to find emissive texture')
 
+def fairing_fixer(partslist,partdir):
+    """Unhides fairings if there is a part connected to the bottom of the engine"""
+    for part in partslist:
+        if partdir[part.partName][1] == "Engine":
+            for attN in part.attNlist:
+                if attN.loc == "bottom":
+                    root = bpy.data.objects[part.part]
+                    queue = [child for child in root.children]
+                    while len(queue) > 0:
+                        current = queue.pop(0)
+                        if "fair" in current.name:
+                            current.hide = False
+                            current.hide_render = False
+                        for child in current.children:
+                            queue.append(child)
     
 def scale_fixer(craft,scale):
     scn = bpy.context.scene
     for part in craft.partslist:
-        obj = bpy.data.objects[part.part]
-        scn.objects.active = obj
-        obj_loc = obj.location
-        obj_sca = obj.scale
-        obj.location = (scale*obj_loc[0],scale*obj_loc[1],scale*obj_loc[2])
-        obj.scale = (scale*obj_sca[0],scale*obj_sca[1],scale*obj_sca[2])
+        if part.part in bpy.data.objects:
+            obj = bpy.data.objects[part.part]
+            scn.objects.active = obj
+            obj_loc = obj.location
+            obj_sca = obj.scale
+            obj.location = (scale*obj_loc[0],scale*obj_loc[1],scale*obj_loc[2])
+            obj.scale = (scale*obj_sca[0],scale*obj_sca[1],scale*obj_sca[2])
         
     bpy.ops.transform.resize()    
 
