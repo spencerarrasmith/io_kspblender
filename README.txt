@@ -13,7 +13,7 @@
   @   @  @@  @   @ 
  
 
-KSPBLENDER .90
+KSPBLENDER .95
 3/1/2015
 SPENCER ARRASMITH
 https://github.com/Dasoccerguy/io_kspblender
@@ -31,7 +31,7 @@ To get this working, you will need to download 2 Blender addons, enable them, an
 2. Download the .mu importer from https://github.com/taniwha-qf/io_object_mu, and place the unzipped folder in the same location
 3. Find KSP.exe (look in Steam\Steamapps\common\Kerbal Space Program)
 4. Copy the directory name
-5. Paste it into kspdir.txt
+5. Paste it directly into kspdir.txt and save
 6. In Blender, press CTRL+ALT+U, go to Addons, and enable this addon. It is called "Import-Export: KSPBlender .craft Import"
 7. Either click "Save User Settings" or come back and enable the addon every time you want to use it.
 8. Enjoy!
@@ -40,9 +40,5 @@ To get this working, you will need to download 2 Blender addons, enable them, an
 
 MOD PARTS
 
-It's going to be hard for me to add support for every mod, but you can "easily" do it yourself!
-
-1. Open "part_dir.py" and look at what it's doing.
-2. Every part has a name that is mapped to the location of the model file.
-3. Open up a .craft file with the mod parts you wish to use so you can see what the part is called (IT's NEVER THE SAME AS IN THE VAB OR SPH)
-4. Create new entries for each mod part, following the form in the part_dir function. The last element ("engine","utility", etc) should be the name of the mod.
+Thanks to Cptman's hard work, there is now a function to procedurally find parts... which means that every mod is now supported.
+However, many parts may import with the wrong scale or be slightly misplaced. Please report any scaling or location issues!
