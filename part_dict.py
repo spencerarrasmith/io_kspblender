@@ -126,6 +126,8 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
                 got_path= True
             if "mesh =" in line and not(got_path):
                 part_path = line.split()[-1]
+                if ".DAE" in part_path or ".dae" in part_path:
+                    part_path = "model.mu"                  # or at least I hope so
                 part_path = os.path.join(path,part_path)
                 got_path = True
                 
