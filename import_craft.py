@@ -36,7 +36,11 @@ def import_craft(self, context, filepath):
     undo = bpy.context.user_preferences.edit.use_global_undo
     bpy.context.user_preferences.edit.use_global_undo = False
     bpy.context.scene.render.engine = 'CYCLES'                      # join the dark side
+    for area in bpy.context.screen.areas:
+        if area.type == 'VIEW_3D':
+            area.spaces[0].viewport_shade = 'TEXTURED'
 
+    
     print("\n")
     print("         A          ")
     print("        / \\        ")
