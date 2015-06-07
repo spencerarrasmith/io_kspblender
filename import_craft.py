@@ -229,6 +229,12 @@ def import_parts(filepath,partdir,right_scale,right_location):
                     bpy.ops.mesh.remove_doubles(threshold = 0.0001)                                                     # remove double vertices
                     bpy.ops.mesh.normals_make_consistent(inside = False)                                                # fix normals
                     bpy.ops.object.mode_set(mode='OBJECT')                                                              # leave edit mode
+
+                    if len(obj.data.uv_layers):
+                        if "_fixed" not in obj.data.uv_layers[0].name:
+                            obj.data.uv_layers.active.name+="_fixed"
+                            for uvvertex in obj.data.uv_layers.active.data:
+                                uvvertex.uv[1] = -uvvertex.uv[1] + 1
                     
                     obj.select = True
                     bpy.ops.object.shade_smooth()
@@ -585,7 +591,7 @@ def add_launchclamp(part,objlist):
             bpy.context.object.modifiers[0].name = "bottom_hook"
             bpy.context.object.modifiers[0].object = groundmesh
             bpy.context.object.modifiers[0].vertex_group = "bottom"
-            bpy.context.object.modifiers[0].force = 1
+            #bpy.context.object.modifiers[0].force = 1
             
             #bpy.context.object.modifiers[1].name = "top_hook"
             #bpy.context.object.modifiers[1].object = capmesh
