@@ -276,24 +276,18 @@ class MakeOneMeshOperator(bpy.types.Operator):
         
         return {'FINISHED'}
 
-#class LoadFlagPartOperator(bpy.types.Operator):
-#    bl_idname = "object.load_flag"
-#    bl_label = "Load Flag"
-    
-    #filename = StringProperty(name="Flag Image", subtype="FILE_PATH")
-    
-    
-#    def execute(self,context):
-#        loadflag.main()
-#        return {'FINISHED'}
-    
-# EnableEditingOperator
-# DisableEditingOperator
-# ChangeSymmetryOperator
-# JoinAllMeshesOperator
-# SetMaterialAllOperator
-
-
+##class LoadFlagPartOperator(bpy.types.Operator, ImportHelper):
+##    bl_idname = "object.loadflag"
+##    bl_label = "Load Flag"
+##
+##    filename_ext = "Image file"
+##    filter_glob = StringProperty(default="*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tiff;*.TIFF", options={'HIDDEN'})
+##    #Add more file types if necessary, I guess
+##    
+##    def execute(self, context):
+##        from . import load_flag
+##
+##
 
 
 

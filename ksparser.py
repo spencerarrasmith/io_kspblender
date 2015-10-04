@@ -114,6 +114,7 @@ class part:
         self.dstg = 0
         self.sidx = 0
         self.sqor = 0
+        self.sepI = 0
         self.attm = 0
         self.modCost = 0
         self.modMass = 0
@@ -126,6 +127,7 @@ class part:
         self.attNlist = []
         self.symlist = []
         self.srfNlist = []
+        self.xsections = []
 
         self.set_data(self.lines)
 
@@ -163,6 +165,8 @@ class part:
                 self.sidx = int(line.split()[2])                                #"sidx = -1" -> -1 ______________?
             if line.split()[0] == "sqor":
                 self.sqor = int(line.split()[2])                                #"sqor = -1" -> -1 _____________?
+            if line.split()[0] == "sepI":
+                self.sepI = int(line.split()[2])
             if line.split()[0] == "attm":
                 self.attm = int(line.split()[2])                                #"attm = 0" -> 0 boolean for "is attachment?" thing that can be attached onto surface rather than connection node
             if line.split()[0] == "modCost":
