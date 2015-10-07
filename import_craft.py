@@ -58,6 +58,9 @@ def import_craft(self, context, filepath):
     print("\n")
 
     ksp = get_kspdir()
+    if not os.path.isdir(ksp):
+        operator.report({'ERROR'}, "KSP directory was not found. Be sure to have read the instructions carefully.")
+        return {'CANCELLED'}
     [partdir,right_location] = part_dict.make_dict(ksp)             # <3 Cptman
     rightscale = right_scale.make()
     craft = import_parts(filepath,partdir,rightscale,right_location)
