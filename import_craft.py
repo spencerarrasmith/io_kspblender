@@ -234,8 +234,8 @@ def import_parts(filepath,partdir,right_scale,right_location):
                         if "_fixed" not in obj.data.uv_layers[0].name:
                             obj.data.uv_layers.active.name+="_fixed"
                             for uvvertex in obj.data.uv_layers.active.data:
-                                uvvertex.uv[1] = -uvvertex.uv[1] + 1
-                    
+                                uvvertex.uv[1] = uvvertex.uv[1] + 1                                                     # removed negative sign in front of uvvertex.uv [1]
+                                                                                                                        # may need to replace it if a KSP update breaks textures
                     obj.select = True
                     bpy.ops.object.shade_smooth()
                     obj.data.use_auto_smooth = True
