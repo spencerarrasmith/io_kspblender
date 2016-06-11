@@ -1,22 +1,26 @@
-         A         
-        / \       
-       | 0 |       
-       |___|       
-       |___|       
-       |KSP|       
-      /|   |\     
-     /| \_/ |\   
-    /_|  W  |_\   
-       @WWW@       
-     @@WWWWW@@     
-    @ @@@@ @@@ @   
-  @   @  @@  @   @ 
+             A         
+            / \       
+           | 0 |       
+           |___|       
+           |___|       
+           |KSP|       
+          /|   |\     
+         /| \_/ |\   
+        /_|  W  |_\   
+           @WWW@       
+         @@WWWWW@@     
+        @ @@@@ @@@ @   
+      @   @  @@  @   @ 
  
 
 KSPBLENDER .95
+
 3/1/2015
+
 SPENCER ARRASMITH
+
 https://github.com/Dasoccerguy/io_kspblender
+
 DASOCCERGUY39@GMAIL.COM
 
 Thanks for checking out the readme!
