@@ -1,3 +1,4 @@
+ ```
          A         
         / \       
        | 0 |       
@@ -11,7 +12,7 @@
      @@WWWWW@@     
     @ @@@@ @@@ @   
   @   @  @@  @   @ 
- 
+``` 
 
 KSPBLENDER .95
 3/1/2015
@@ -35,8 +36,6 @@ To get this working, you will need to download 2 Blender addons, enable them, an
 6. In Blender, press CTRL+ALT+U, go to Addons, and enable this addon. It is called "Import-Export: KSPBlender .craft Import"
 7. Either click "Save User Settings" or come back and enable the addon every time you want to use it.
 8. Enjoy!
-
-
 
 MOD PARTS
 
