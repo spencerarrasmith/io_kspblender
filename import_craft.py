@@ -388,6 +388,7 @@ def add_fuelline(part,objlist):
     print(root.rotation_quaternion)
     print(part.rotQ)
     root.children[0].hide = True
+    anchor = False
     for child in root.children[0].children:
         if "anchor" in child.name:
             anchor = child
@@ -423,11 +424,12 @@ def add_fuelline(part,objlist):
     bpy.context.object.constraints["Stretch To"].target = targetCap
     bpy.context.object.constraints["Stretch To"].bulge = 0
     bpy.ops.object.select_all(action = 'DESELECT')
-    anchor.select = True
     #bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
     bpy.context.object.name = part.part[0:part.part.rfind('_')]+"Target"+part.part[part.part.rfind('_'):len(part.part)]
-    anchor.empty_draw_type = 'SPHERE'
-    anchor.empty_draw_size = .25 
+    if anchor:
+        anchor.select = True
+        anchor.empty_draw_type = 'SPHERE'
+        anchor.empty_draw_size = .25 
     bpy.ops.object.select_all(action = 'DESELECT')
 
 
@@ -440,8 +442,9 @@ def add_fuelline(part,objlist):
     const.target = target.children[1]
     const.bulge = 0  
 
-    anchor.delta_location = Vector(part.attPos)
-    anchor.rotation_quaternion = Quaternion(part.attRot)
+    if anchor:
+        anchor.delta_location = Vector(part.attPos)
+        anchor.rotation_quaternion = Quaternion(part.attRot)
     target.location = Vector(part.tgtpos)
     target.rotation_quaternion = Quaternion(part.tgtrot)
     
@@ -471,7 +474,10 @@ def add_fuelline(part,objlist):
         if "Cap" in obj.name and obj.type == 'EMPTY':
             obj.hide = True
     
-    fuellen = (target.location - anchor.location).magnitude*10
+    if anchor:
+        fuellen = (target.location - anchor.location).magnitude*10
+    else:
+        fuellen = target.location.magnitude*10
     newfuelline.data.vertices[5].co.y = fuellen
     newfuelline.data.vertices[6].co.y = fuellen
     newfuelline.data.vertices[7].co.y = fuellen
