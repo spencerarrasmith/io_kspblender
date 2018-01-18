@@ -83,7 +83,8 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
         pos = (0,0,0)
         #scale=(0,0,0)
         #rescale_fact = 1
-        f=open(os.path.join(path,cfg))
+        print(os.path.join(path,cfg))
+        f=open(os.path.join(path,cfg), encoding='utf-8', errors='ignore')
         part_path = ""
         got_path = False
         got_name = False
